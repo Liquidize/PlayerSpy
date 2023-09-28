@@ -1,0 +1,13 @@
+{
+    "Author": "Kaliya",
+    "Name": "Player Spy",
+    "Punchline": "Allows the dynamic changing of a penumbra mod option, if certain players are near :).",
+    "Description": "Allows the dynamic changing of a penumbra mod option, if certain players are near :).",
+    "InternalName": "PlayerSpy",
+    "ApplicableVersion": "any",
+    "Tags": [
+        "penumbra",
+        "player",
+        "spy"
+    ]
+}

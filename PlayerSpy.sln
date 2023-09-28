@@ -1,0 +1,51 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.7.34018.315
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "PlayerSpy", "PlayerSpy\PlayerSpy.csproj", "{13C812E9-0D42-4B95-8646-40EEBF30636F}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Penumbra.Api", "..\Penumbra\Penumbra.Api\Penumbra.Api.csproj", "{904DBEB3-E249-4ACA-9F0C-B1E701A6913B}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "OtterGui", "..\OtterGui\OtterGui.csproj", "{ABFB6E9E-3A84-4A31-A443-BDBF3340251B}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Debug|x64 = Debug|x64
+		Release|Any CPU = Release|Any CPU
+		Release|x64 = Release|x64
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{13C812E9-0D42-4B95-8646-40EEBF30636F}.Debug|Any CPU.ActiveCfg = Debug|x64
+		{13C812E9-0D42-4B95-8646-40EEBF30636F}.Debug|Any CPU.Build.0 = Debug|x64
+		{13C812E9-0D42-4B95-8646-40EEBF30636F}.Debug|x64.ActiveCfg = Debug|x64
+		{13C812E9-0D42-4B95-8646-40EEBF30636F}.Debug|x64.Build.0 = Debug|x64
+		{13C812E9-0D42-4B95-8646-40EEBF30636F}.Release|Any CPU.ActiveCfg = Release|x64
+		{13C812E9-0D42-4B95-8646-40EEBF30636F}.Release|Any CPU.Build.0 = Release|x64
+		{13C812E9-0D42-4B95-8646-40EEBF30636F}.Release|x64.ActiveCfg = Release|x64
+		{13C812E9-0D42-4B95-8646-40EEBF30636F}.Release|x64.Build.0 = Release|x64
+		{904DBEB3-E249-4ACA-9F0C-B1E701A6913B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{904DBEB3-E249-4ACA-9F0C-B1E701A6913B}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{904DBEB3-E249-4ACA-9F0C-B1E701A6913B}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{904DBEB3-E249-4ACA-9F0C-B1E701A6913B}.Debug|x64.Build.0 = Debug|Any CPU
+		{904DBEB3-E249-4ACA-9F0C-B1E701A6913B}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{904DBEB3-E249-4ACA-9F0C-B1E701A6913B}.Release|Any CPU.Build.0 = Release|Any CPU
+		{904DBEB3-E249-4ACA-9F0C-B1E701A6913B}.Release|x64.ActiveCfg = Release|Any CPU
+		{904DBEB3-E249-4ACA-9F0C-B1E701A6913B}.Release|x64.Build.0 = Release|Any CPU
+		{ABFB6E9E-3A84-4A31-A443-BDBF3340251B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{ABFB6E9E-3A84-4A31-A443-BDBF3340251B}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{ABFB6E9E-3A84-4A31-A443-BDBF3340251B}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{ABFB6E9E-3A84-4A31-A443-BDBF3340251B}.Debug|x64.Build.0 = Debug|Any CPU
+		{ABFB6E9E-3A84-4A31-A443-BDBF3340251B}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{ABFB6E9E-3A84-4A31-A443-BDBF3340251B}.Release|Any CPU.Build.0 = Release|Any CPU
+		{ABFB6E9E-3A84-4A31-A443-BDBF3340251B}.Release|x64.ActiveCfg = Release|Any CPU
+		{ABFB6E9E-3A84-4A31-A443-BDBF3340251B}.Release|x64.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {B17E85B1-5F60-4440-9F9A-3DDE877E8CDF}
+	EndGlobalSection
+EndGlobal
