@@ -8,6 +8,8 @@ using Dalamud.Interface.Components;
 using OtterGui.Raii;
 using PlayerSpy;
 using PlayerSpy.Data;
+using System.Collections.Generic;
+using Dalamud.Logging;
 
 namespace PlayerSpy.Windows;
 
@@ -16,7 +18,7 @@ public class ConfigWindow : Window, IDisposable
     private Configuration Configuration;
 
     public ConfigWindow(Plugin plugin) : base(
-        "A Wonderful Configuration Window",
+        "Player Spy - Configuration",
          ImGuiWindowFlags.NoCollapse | ImGuiWindowFlags.NoScrollbar |
         ImGuiWindowFlags.NoScrollWithMouse)
     {
@@ -41,7 +43,7 @@ public class ConfigWindow : Window, IDisposable
             Configuration.RenderedSettings.Add(new RenderedSetting());
         }
 
-        var settings = Configuration.RenderedSettings;
+        var settings = new List<RenderedSetting>(Configuration.RenderedSettings);
 
         if (ImGui.BeginTable("#modsettings", 9, ImGuiTableFlags.Resizable | ImGuiTableFlags.Reorderable))
         {
@@ -60,80 +62,83 @@ public class ConfigWindow : Window, IDisposable
             {
                 ImGui.TableNextRow();
 
+                var row = ImGui.TableGetRowIndex() - 1;
+                var setting = settings[row];
                 ImGui.TableSetColumnIndex(0);
                 ImGui.TextUnformatted(i.ToString());
+               
 
                 // Mod
                 ImGui.TableSetColumnIndex(1);
 
-                var name = settings[i].Mod;
-                if (ImGui.InputText("##mod", ref name, 128))
+                var name = setting.Mod;
+                if (ImGui.InputText("##mod" + row, ref name, 128))
                 {
-                    settings[i].Mod = name;
+                    setting.Mod = name;
                 }
 
                 // Collction
                 ImGui.TableSetColumnIndex(2);
 
-                var collection = settings[i].Collection;
-                if (ImGui.InputText("##collection", ref collection, 128))
+                var collection = setting.Collection;
+                if (ImGui.InputText("##collection" + row, ref collection, 128))
                 {
-                    settings[i].Collection = collection;
+                    setting.Collection = collection;
                 }
 
                 // Option
                 ImGui.TableSetColumnIndex(3);
 
-                var option = settings[i].ModOption;
-                if (ImGui.InputText("##option", ref option, 128))
+                var option = setting.ModOption;
+                if (ImGui.InputText("##option" + row, ref option, 128))
                 {
-                    settings[i].ModOption = option;
+                    setting.ModOption = option;
                 }
 
 
                 // Rendered Option
                 ImGui.TableSetColumnIndex(4);
 
-                var rendered = settings[i].RenderedOption;
-                if (ImGui.InputText("##renderedOption", ref rendered, 128))
+                var rendered = setting.RenderedOption;
+                if (ImGui.InputText("##renderedOption" + row, ref rendered, 128))
                 {
-                    settings[i].RenderedOption = rendered;
-                }
+                    setting.RenderedOption = rendered;
+                }   
 
 
 
                 // Unrendered Option
                 ImGui.TableSetColumnIndex(5);
 
-                var unrendered = settings[i].NotRenderedOption;
-                if (ImGui.InputText("##notRenderedOption", ref unrendered, 128))
+                var unrendered = setting.NotRenderedOption;
+                if (ImGui.InputText("##notRenderedOption" + row, ref unrendered, 128))
                 {
-                    settings[i].NotRenderedOption = unrendered;
+                    setting.NotRenderedOption = unrendered;
                 }
 
                 // Players
                 ImGui.TableSetColumnIndex(6);
 
-                var players = settings[i].Players;
-                if (ImGui.InputText("##players", ref players, 512))
+                var players = setting.Players;
+                if (ImGui.InputText("##players" + row, ref players, 512))
                 {
-                    settings[i].Players = players;
+                    setting.Players = players;
                 }
 
 
                 // Enabled
                 ImGui.TableSetColumnIndex(7);
 
-                var enabled = settings[i].IsEnabled;
-                if (ImGui.Checkbox("##enabled", ref enabled))
+                var enabled = setting.IsEnabled;
+                if (ImGui.Checkbox("##enabled" + row, ref enabled))
                 {
-                    settings[i].IsEnabled = enabled;
+                    setting.IsEnabled = enabled;
                 }
 
                 ImGui.TableSetColumnIndex(8);
-                if (ImGuiComponents.IconButton(FontAwesomeIcon.Trash))
+                if (ImGuiComponents.IconButton("##trashCan" + row, FontAwesomeIcon.Trash))
                 {
-                    Configuration.RenderedSettings.RemoveAt(i);
+                    settings.RemoveAt(row);
                 }
 
             }

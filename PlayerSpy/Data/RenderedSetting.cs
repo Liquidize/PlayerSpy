@@ -24,5 +24,12 @@ namespace PlayerSpy.Data
 
         public bool IsEnabled { get; set; } = true;
 
+
+        public bool IsValidSetting()
+        {
+            return string.IsNullOrEmpty(Mod) != true && string.IsNullOrEmpty(Collection) != true && string.IsNullOrEmpty(ModOption) != true && string.IsNullOrEmpty(RenderedOption) != true && string.IsNullOrEmpty(NotRenderedOption) != true;
+        }
+
+
     }
 }

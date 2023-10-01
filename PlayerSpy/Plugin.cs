@@ -32,7 +32,7 @@ namespace PlayerSpy
         [PluginService] public static ObjectTable Objects { get; private set; } = null!;
         private ConfigWindow ConfigWindow { get; init; }
 
-        private Dictionary<string, bool> renderStates = new Dictionary<string, bool>();
+        private Dictionary<string, int> renderStates = new Dictionary<string, int>();
 
 
         public Plugin(
@@ -72,8 +72,10 @@ namespace PlayerSpy
             var mods = penumbraService.GetMods();
             foreach (var setting in Configuration.RenderedSettings)
             {
-                var mod = mods.FirstOrDefault(x => x.Mod.Name.ToLower() == setting.Mod.ToLower()).Mod;
+                if (setting.IsValidSetting() != true) continue;
 
+                var modKvp = mods.FirstOrDefault(x => x.Mod.Name.ToLower() == setting.Mod.ToLower());
+                var mod = modKvp.Mod;
                 if (setting.IsEnabled != true || mod == null)
                 {
                     continue;
@@ -83,32 +85,23 @@ namespace PlayerSpy
                 bool anyPlayerMatches = players.Any(player => settingsPlayers.Any(settingsPlayer => settingsPlayer.Trim() == player.Name.TextValue));
 
                 var stateFound = renderStates.ContainsKey(mod.Name);
-                var state = stateFound ? renderStates[mod.Name] : false;
 
-
-                if (anyPlayerMatches && (!state || !stateFound))
+                if (!stateFound)
                 {
-                    if (!stateFound)
-                    {
-                        renderStates.Add(mod.Name, true);
-                    } else
-                    {
-                        renderStates[mod.Name] = true;
-                    }
+                    renderStates.Add(mod.Name, -1);
+                }
 
+                var state = renderStates[mod.Name];
+
+                if (anyPlayerMatches && (state != 0))
+                {
+                    
                     penumbraService.SetModSetting(mod, setting.Collection, setting.ModOption, setting.RenderedOption);
-                } else if (!anyPlayerMatches && (state || !stateFound))
+                    renderStates[mod.Name] = 0;
+                } else if (!anyPlayerMatches && state != 1)
                 {
-                    if (!stateFound)
-                    {
-                        renderStates.Add(mod.Name, false);
-                    }
-                    else
-                    {
-                        renderStates[mod.Name] = false;
-                    }
-
                     penumbraService.SetModSetting(mod, setting.Collection, setting.ModOption, setting.NotRenderedOption);
+                    renderStates[mod.Name] = 1;
                 }
 
             }
