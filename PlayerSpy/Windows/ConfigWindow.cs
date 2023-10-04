@@ -5,7 +5,6 @@ using Dalamud.Interface;
 using Dalamud.Interface.Windowing;
 using ImGuiNET;
 using Dalamud.Interface.Components;
-using OtterGui.Raii;
 using PlayerSpy;
 using PlayerSpy.Data;
 using System.Collections.Generic;
@@ -152,9 +151,6 @@ public class ConfigWindow : Window, IDisposable
             if (ImGui.BeginChild("###settingsFinishButton"))
             {
 
-                using (ImRaii.PushStyle(ImGuiStyleVar.FrameRounding, 100f))
-                {
-
                     if (ImGui.Button(FontAwesomeIcon.Save.ToIconString(), new Vector2(40)))
                     {
                         Configuration.RenderedSettings = settings;
@@ -163,7 +159,6 @@ public class ConfigWindow : Window, IDisposable
                         if (!ImGui.IsKeyDown(ImGuiKey.ModShift))
                             IsOpen = false;
                     }
-                }
             }
             ImGui.EndChild();
 
