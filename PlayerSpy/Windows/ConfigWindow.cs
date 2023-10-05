@@ -9,6 +9,7 @@ using PlayerSpy;
 using PlayerSpy.Data;
 using System.Collections.Generic;
 using Dalamud.Logging;
+using Dalamud.Interface.Utility;
 
 namespace PlayerSpy.Windows;
 

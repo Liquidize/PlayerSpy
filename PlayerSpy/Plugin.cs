@@ -16,6 +16,7 @@ using static FFXIVClientStructs.FFXIV.Client.UI.UI3DModule;
 using System.Collections.Generic;
 using PlayerSpy.Windows;
 using PlayerSpy.Services;
+using Dalamud.Plugin.Services;
 
 namespace PlayerSpy
 {
@@ -24,12 +25,12 @@ namespace PlayerSpy
         public string Name => "Player Spy";
 
         private DalamudPluginInterface PluginInterface { get; init; }
-        private CommandManager CommandManager { get; init; }
+        private ICommandManager CommandManager { get; init; }
         public Configuration Configuration { get; init; }
         public WindowSystem WindowSystem = new("PlayerSpy");
         private PenumbraService penumbraService { get; init; }
-        [PluginService] public static Framework Framework { get; private set; } = null!;
-        [PluginService] public static ObjectTable Objects { get; private set; } = null!;
+        [PluginService] public static IFramework Framework { get; private set; } = null!;
+        [PluginService] public static IObjectTable Objects { get; private set; } = null!;
         private ConfigWindow ConfigWindow { get; init; }
 
         private Dictionary<string, int> renderStates = new Dictionary<string, int>();
@@ -37,7 +38,7 @@ namespace PlayerSpy
 
         public Plugin(
             [RequiredVersion("1.0")] DalamudPluginInterface pluginInterface,
-            [RequiredVersion("1.0")] CommandManager commandManager)
+            [RequiredVersion("1.0")] ICommandManager commandManager)
         {
             this.PluginInterface = pluginInterface;
             this.CommandManager = commandManager;
@@ -64,7 +65,7 @@ namespace PlayerSpy
             this.WindowSystem.Draw();
         }
 
-        private void OnFrameworkUpdate(Framework framework)
+        private void OnFrameworkUpdate(IFramework framework)
         {
             if (Configuration.RenderedSettings.Count == 0) return;
 
