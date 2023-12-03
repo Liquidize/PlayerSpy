@@ -2,11 +2,16 @@ using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
+using System.Net;
+using System.Net.Http;
+using System.Net.Http.Headers;
 using System.Text;
+using System.Threading;
 using Dalamud.Interface.Internal.Notifications;
 using Dalamud.Logging;
 using Dalamud.Plugin;
 using ImGuizmoNET;
+using Newtonsoft.Json;
 using Penumbra.Api;
 using Penumbra.Api.Enums;
 using Penumbra.Api.Helpers;
@@ -37,6 +42,22 @@ public readonly record struct ModSettings(IDictionary<string, IList<string>> Set
         => new();
 }
 
+
+public class RedrawData
+{
+    public enum RedrawType
+    {
+        Redraw,
+        AfterGPose,
+    }
+
+    public string Name { get; set; } = string.Empty;
+    public int ObjectTableIndex { get; set; } = -1;
+    public RedrawType Type { get; set; } = RedrawType.Redraw;
+}
+
+
+
 public unsafe class PenumbraService : IDisposable
 {
     public const int RequiredPenumbraBreakingVersion = 4;
@@ -53,7 +74,7 @@ public unsafe class PenumbraService : IDisposable
     private FuncSubscriber<string, string, string, int, PenumbraApiEc> _setModPriority;
     private FuncSubscriber<string, string, string, string, string, PenumbraApiEc> _setModSetting;
     private FuncSubscriber<string, string, string, string, IReadOnlyList<string>, PenumbraApiEc> _setModSettings;
-
+    private ActionSubscriber<int, RedrawType> _redrawSubscriber;
     private readonly EventSubscriber _initializedEvent;
     private readonly EventSubscriber _disposedEvent;
 
@@ -80,6 +101,42 @@ public unsafe class PenumbraService : IDisposable
         {
             _setModSetting.Invoke(collection, mod.DirectoryName, mod.Name, setting, value);
         }
+    }
+
+
+    /// <summary> Try to redraw the given actor. </summary>
+    /// NOTE: I should probably write this properly, but I don't give a fuck since this isn't for public use anyway /shrug
+    public void Redraw()
+    {
+        if (!Available)
+            return;
+
+
+        var redrawData = new RedrawData()
+        {
+            Name = Plugin.ClientState?.LocalPlayer?.Name.TextValue,
+            Type = RedrawData.RedrawType.Redraw
+        };
+
+        string json = JsonConvert.SerializeObject(redrawData);
+
+        using HttpClient client = new HttpClient();
+        var buffer = Encoding.UTF8.GetBytes(json);
+        var byteContent = new ByteArrayContent(buffer);
+        byteContent.Headers.ContentType = new MediaTypeHeaderValue("application/json");
+        using var response = client.PostAsync("http://localhost:42069/api/redraw", byteContent);
+        response.Wait();
+       var responseData = response.GetAwaiter().GetResult();
+
+        if (responseData.IsSuccessStatusCode)
+        {
+            PluginLog.Information("Redrew character due to status change.");
+        } else
+        {
+            PluginLog.Warning("Could not redraw character.");
+        }
+
+
     }
 
     public IReadOnlyList<(Mod Mod, ModSettings Settings)> GetMods()

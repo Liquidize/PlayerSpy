@@ -54,6 +54,7 @@ public class ConfigWindow : Window, IDisposable
             ImGui.TableSetupColumn("Rendered Option");
             ImGui.TableSetupColumn("Unrendered Option");
             ImGui.TableSetupColumn("Players");
+            ImGui.TableSetupColumn("Simply Disable Mode");
             ImGui.TableSetupColumn("Enabled");
             ImGui.TableSetupColumn("Delete");
             ImGui.TableHeadersRow();
@@ -126,8 +127,16 @@ public class ConfigWindow : Window, IDisposable
                 }
 
 
-                // Enabled
                 ImGui.TableSetColumnIndex(7);
+                var isnotrenderedmoddisable = setting.IsNotRenderedModDisabled;
+                if (ImGui.Checkbox("##isnotrenderedmoddisable" + row, ref isnotrenderedmoddisable))
+                {
+                    setting.IsNotRenderedModDisabled = isnotrenderedmoddisable;
+                }
+
+
+                // Enabled
+                ImGui.TableSetColumnIndex(8);
 
                 var enabled = setting.IsEnabled;
                 if (ImGui.Checkbox("##enabled" + row, ref enabled))
@@ -135,7 +144,7 @@ public class ConfigWindow : Window, IDisposable
                     setting.IsEnabled = enabled;
                 }
 
-                ImGui.TableSetColumnIndex(8);
+                ImGui.TableSetColumnIndex(9);
                 if (ImGuiComponents.IconButton("##trashCan" + row, FontAwesomeIcon.Trash))
                 {
                     settings.RemoveAt(row);

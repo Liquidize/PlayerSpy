@@ -31,9 +31,17 @@ namespace PlayerSpy
         private PenumbraService penumbraService { get; init; }
         [PluginService] public static IFramework Framework { get; private set; } = null!;
         [PluginService] public static IObjectTable Objects { get; private set; } = null!;
+
+        [PluginService] public static IClientState ClientState { get; private set; } = null;
+
         private ConfigWindow ConfigWindow { get; init; }
 
         private Dictionary<string, int> renderStates = new Dictionary<string, int>();
+
+        public string? CurrentPlayerName()
+        {
+            return ClientState.LocalPlayer?.Name.TextValue;
+        }
 
 
         public Plugin(
@@ -77,6 +85,7 @@ namespace PlayerSpy
 
                 var modKvp = mods.FirstOrDefault(x => x.Mod.Name.ToLower() == setting.Mod.ToLower());
                 var mod = modKvp.Mod;
+                var modSettings = modKvp.Settings;
                 if (setting.IsEnabled != true || mod == null)
                 {
                     continue;
@@ -96,12 +105,29 @@ namespace PlayerSpy
 
                 if (anyPlayerMatches && (state != 0))
                 {
-                    
-                    penumbraService.SetModSetting(mod, setting.Collection, setting.ModOption, setting.RenderedOption);
+
+                    if (!setting.IsNotRenderedModDisabled)
+                    {
+
+                        penumbraService.SetModSetting(mod, setting.Collection, setting.ModOption, setting.RenderedOption);
+                    } else
+                    {
+                        penumbraService.SetMod(mod, new ModSettings(modSettings.Settings, modSettings.Priority, true));
+                    }
+                    penumbraService.Redraw();
                     renderStates[mod.Name] = 0;
                 } else if (!anyPlayerMatches && state != 1)
                 {
-                    penumbraService.SetModSetting(mod, setting.Collection, setting.ModOption, setting.NotRenderedOption);
+                    if (!setting.IsNotRenderedModDisabled)
+                    {
+
+                        penumbraService.SetModSetting(mod, setting.Collection, setting.ModOption, setting.NotRenderedOption);
+                    }
+                    else
+                    {
+                        penumbraService.SetMod(mod, new ModSettings(modSettings.Settings, modSettings.Priority, false));
+                    }
+                    penumbraService.Redraw();
                     renderStates[mod.Name] = 1;
                 }
 
