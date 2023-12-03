@@ -5,8 +5,8 @@
         "Punchline": "A plugin that lets you modify a penumbra mod dynamically based on if someone is nearby!",
         "Description": "A plugin that lets you modify a penumbra mod dynamically based on if someone is nearby.",
         "InternalName": "PlayerSpy",
-        "AssemblyVersion": "0.0.0.3",
-		"TestingAssemblyVersion": "0.0.0.3",
+        "AssemblyVersion": "0.0.0.5",
+		"TestingAssemblyVersion": "0.0.0.5",
 		"RepoUrl": "https://github.com/Liquidize/PlayerSpy",
 		"ApplicableVersion": "any",
 		"DalamudApiLevel": 9,
@@ -17,8 +17,8 @@
             "player"
 		],
 		"IconUrl": "https://github.com/Liquidize/KdrSpy/raw/master/icon.png",
-		"DownloadLinkInstall": "https://github.com/Liquidize/PlayerSpy/releases/download/v0.0.0.3/latest.zip",
-		"DownloadLinkTesting": "https://github.com/Liquidize/PlayerSpy/releases/download/v0.0.0.3/latest.zip",
-		"DownloadLinkUpdate": "https://github.com/Liquidize/PlayerSpy/releases/download/v0.0.0.3/latest.zip"
+		"DownloadLinkInstall": "https://github.com/Liquidize/PlayerSpy/releases/download/v0.0.0.5/latest.zip",
+		"DownloadLinkTesting": "https://github.com/Liquidize/PlayerSpy/releases/download/v0.0.0.5/latest.zip",
+		"DownloadLinkUpdate": "https://github.com/Liquidize/PlayerSpy/releases/download/v0.0.0.5/latest.zip"
 	}
 ]
