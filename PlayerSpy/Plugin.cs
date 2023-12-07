@@ -145,7 +145,7 @@ namespace PlayerSpy
                 }
 
             }
-                _lastCheckTime = now.AddMilliseconds(2000);
+                _lastCheckTime = now.AddMilliseconds(200);
 
         }
 

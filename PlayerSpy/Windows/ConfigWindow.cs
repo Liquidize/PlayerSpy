@@ -47,7 +47,7 @@ public class ConfigWindow : Window, IDisposable
 
         var settings = new List<RenderedSetting>(Configuration.RenderedSettings);
 
-        if (ImGui.BeginTable("#modsettings", 10, ImGuiTableFlags.Resizable | ImGuiTableFlags.Reorderable))
+        if (ImGui.BeginTable("#modsettings", 11, ImGuiTableFlags.Resizable | ImGuiTableFlags.Reorderable))
         {
             ImGui.TableSetupColumn("#");
             ImGui.TableSetupColumn("Mod Name");
