@@ -22,6 +22,8 @@ namespace PlayerSpy.Data
 
         public string NotRenderedOption { get; set; } = "";
 
+        public int Priority { get; set; } = 0;
+
         public bool IsNotRenderedModDisabled { get; set; } = false;
         
         

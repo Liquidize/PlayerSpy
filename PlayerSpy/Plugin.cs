@@ -17,6 +17,8 @@ using System.Collections.Generic;
 using PlayerSpy.Windows;
 using PlayerSpy.Services;
 using Dalamud.Plugin.Services;
+using PlayerSpy.Data;
+using ImGuizmoNET;
 
 namespace PlayerSpy
 {
@@ -36,7 +38,9 @@ namespace PlayerSpy
 
         private ConfigWindow ConfigWindow { get; init; }
 
-        private Dictionary<string, int> renderStates = new Dictionary<string, int>();
+        private Dictionary<string, string> renderStates = new Dictionary<string, string>();
+
+        private DateTime _lastCheckTime;
 
         public string? CurrentPlayerName()
         {
@@ -63,6 +67,7 @@ namespace PlayerSpy
 
         }
 
+
         private void DrawConfigUI()
         {
             ConfigWindow.IsOpen = true;
@@ -73,15 +78,23 @@ namespace PlayerSpy
             this.WindowSystem.Draw();
         }
 
+        /// <summary>
+        /// TODO: We're already checking if a player is found when pulling the highest priority list, perhaps it is best to send this function
+        /// a isPlayerActive propertty or something so we aren't checking twice
+        /// </summary>
+        /// <param name="framework"></param>
         private void OnFrameworkUpdate(IFramework framework)
         {
-            if (Configuration.RenderedSettings.Count == 0) return;
+            var now = DateTime.UtcNow;
+            if (_lastCheckTime > now) return;
 
-            var players = Objects.Where(o => o is PlayerCharacter);
+            var settings = GetHighestPrioritySettings();
             var mods = penumbraService.GetMods();
-            foreach (var setting in Configuration.RenderedSettings)
+            var players = Objects.Where(o => o is PlayerCharacter);
+
+            foreach (var setting in settings)
             {
-                if (setting.IsValidSetting() != true) continue;
+                if (setting == null || setting.IsValidSetting() != true) continue;
 
                 var modKvp = mods.FirstOrDefault(x => x.Mod.Name.ToLower() == setting.Mod.ToLower());
                 var mod = modKvp.Mod;
@@ -91,32 +104,32 @@ namespace PlayerSpy
                     continue;
                 }
 
-                var settingsPlayers = setting.Players.Split(';');
-                bool anyPlayerMatches = players.Any(player => settingsPlayers.Any(settingsPlayer => settingsPlayer.Trim() == player.Name.TextValue));
 
                 var stateFound = renderStates.ContainsKey(mod.Name);
 
                 if (!stateFound)
                 {
-                    renderStates.Add(mod.Name, -1);
+                    renderStates.Add(mod.Name, "");
                 }
-
                 var state = renderStates[mod.Name];
-
-                if (anyPlayerMatches && (state != 0))
+                var settingsPlayers = setting.Players.Split(';');
+                bool anyPlayerMatches = players.Any(player => settingsPlayers.Any(settingsPlayer => settingsPlayer.Trim() == player.Name.TextValue));
+                if (anyPlayerMatches && state != (setting.IsNotRenderedModDisabled ? "true" :setting.RenderedOption))
                 {
+
 
                     if (!setting.IsNotRenderedModDisabled)
                     {
 
                         penumbraService.SetModSetting(mod, setting.Collection, setting.ModOption, setting.RenderedOption);
-                    } else
+                    }
+                    else
                     {
                         penumbraService.SetMod(mod, new ModSettings(modSettings.Settings, modSettings.Priority, true));
                     }
                     penumbraService.Redraw();
-                    renderStates[mod.Name] = 0;
-                } else if (!anyPlayerMatches && state != 1)
+                    renderStates[mod.Name] = setting.IsNotRenderedModDisabled ? "true" : setting.RenderedOption;
+                } else if (!anyPlayerMatches && state != (setting.IsNotRenderedModDisabled? "false" :setting.NotRenderedOption))
                 {
                     if (!setting.IsNotRenderedModDisabled)
                     {
@@ -128,12 +141,45 @@ namespace PlayerSpy
                         penumbraService.SetMod(mod, new ModSettings(modSettings.Settings, modSettings.Priority, false));
                     }
                     penumbraService.Redraw();
-                    renderStates[mod.Name] = 1;
+                    renderStates[mod.Name] = setting.IsNotRenderedModDisabled ? "false" : setting.NotRenderedOption;
                 }
 
             }
+                _lastCheckTime = now.AddMilliseconds(2000);
 
         }
+
+        private List<RenderedSetting> GetHighestPrioritySettings()
+        {
+            List<RenderedSetting> list = new List<RenderedSetting> ();
+
+            var dic = Configuration.RenderedSettings.GroupBy(x => x.Mod).ToDictionary(group => group.Key, group => group.ToList());
+            var players = Objects.Where(o => o is PlayerCharacter);
+            foreach (var kvp in dic)
+            {
+                var renderSettingsList = kvp.Value;
+                var orderedSettings = renderSettingsList.OrderByDescending(x => x.Priority);
+
+                // Select the setting with the highest priority
+                var highestPrioritySetting = orderedSettings.FirstOrDefault(x => x.IsEnabled);
+
+                foreach (var setting in orderedSettings)
+                {
+                    var settingsPlayers = setting.Players.Split(';');
+                    bool anyPlayerMatches = players.Any(player => settingsPlayers.Any(settingsPlayer => settingsPlayer.Trim() == player.Name.TextValue));
+                    if (anyPlayerMatches && setting.IsEnabled)
+                    {
+                        highestPrioritySetting = setting; break;
+                    }
+                }
+
+                list.Add(highestPrioritySetting);
+
+            }
+
+            return list;
+        }
+
 
         public void Unattach()
         {

@@ -16,16 +16,18 @@ namespace PlayerSpy.Windows;
 public class ConfigWindow : Window, IDisposable
 {
     private Configuration Configuration;
+    private Plugin _plugin;
 
     public ConfigWindow(Plugin plugin) : base(
         "Player Spy - Configuration",
          ImGuiWindowFlags.NoCollapse | ImGuiWindowFlags.NoScrollbar |
         ImGuiWindowFlags.NoScrollWithMouse)
     {
-        Size = new Vector2(900, 600);
+        Size = new Vector2(1200, 600);
         SizeCondition = ImGuiCond.Always;
 
         Configuration = plugin.Configuration;
+        _plugin = plugin;
     }
 
     public void Dispose() { }
@@ -45,7 +47,7 @@ public class ConfigWindow : Window, IDisposable
 
         var settings = new List<RenderedSetting>(Configuration.RenderedSettings);
 
-        if (ImGui.BeginTable("#modsettings", 9, ImGuiTableFlags.Resizable | ImGuiTableFlags.Reorderable))
+        if (ImGui.BeginTable("#modsettings", 10, ImGuiTableFlags.Resizable | ImGuiTableFlags.Reorderable))
         {
             ImGui.TableSetupColumn("#");
             ImGui.TableSetupColumn("Mod Name");
@@ -55,6 +57,7 @@ public class ConfigWindow : Window, IDisposable
             ImGui.TableSetupColumn("Unrendered Option");
             ImGui.TableSetupColumn("Players");
             ImGui.TableSetupColumn("Simply Disable Mode");
+            ImGui.TableSetupColumn("Priority");
             ImGui.TableSetupColumn("Enabled");
             ImGui.TableSetupColumn("Delete");
             ImGui.TableHeadersRow();
@@ -135,8 +138,16 @@ public class ConfigWindow : Window, IDisposable
                 }
 
 
-                // Enabled
+
                 ImGui.TableSetColumnIndex(8);
+                var priority = setting.Priority;
+                if (ImGui.InputInt("##priority" + row, ref priority))
+                {
+                    setting.Priority = priority;
+                }
+
+                // Enabled
+                ImGui.TableSetColumnIndex(9);
 
                 var enabled = setting.IsEnabled;
                 if (ImGui.Checkbox("##enabled" + row, ref enabled))
@@ -144,7 +155,7 @@ public class ConfigWindow : Window, IDisposable
                     setting.IsEnabled = enabled;
                 }
 
-                ImGui.TableSetColumnIndex(9);
+                ImGui.TableSetColumnIndex(10);
                 if (ImGuiComponents.IconButton("##trashCan" + row, FontAwesomeIcon.Trash))
                 {
                     settings.RemoveAt(row);
@@ -165,6 +176,7 @@ public class ConfigWindow : Window, IDisposable
                     {
                         Configuration.RenderedSettings = settings;
                         Configuration.Save();
+
 
                         if (!ImGui.IsKeyDown(ImGuiKey.ModShift))
                             IsOpen = false;
