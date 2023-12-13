@@ -158,7 +158,7 @@ public class ConfigWindow : Window, IDisposable
                 ImGui.TableSetColumnIndex(10);
                 if (ImGuiComponents.IconButton("##trashCan" + row, FontAwesomeIcon.Trash))
                 {
-                    settings.RemoveAt(row);
+                    Configuration.RenderedSettings.RemoveAt(row);
                 }
 
             }
