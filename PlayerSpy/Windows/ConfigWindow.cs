@@ -158,7 +158,10 @@ public class ConfigWindow : Window, IDisposable
                 ImGui.TableSetColumnIndex(10);
                 if (ImGuiComponents.IconButton("##trashCan" + row, FontAwesomeIcon.Trash))
                 {
-                    Configuration.RenderedSettings.RemoveAt(row);
+                    // Temp list to remove entries
+                    var newSettings = new List<RenderedSetting>(Configuration.RenderedSettings);
+                    newSettings.RemoveAt(row);
+                    Configuration.RenderedSettings = newSettings;
                 }
 
             }
