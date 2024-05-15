@@ -166,7 +166,8 @@ namespace PlayerSpy
                 {
                     var settingsPlayers = setting.Players.Split(';');
                     bool anyPlayerMatches = players.Any(player => settingsPlayers.Any(settingsPlayer => settingsPlayer.Trim() == player.Name.TextValue));
-                    if (anyPlayerMatches && setting.IsEnabled)
+                    bool allPlayersFound = settingsPlayers.All(settingsPlayer => players.Any(player => player.Name.TextValue.Trim() == settingsPlayer.Trim()));
+                    if (((anyPlayerMatches && !setting.AllPlayersNearRequired) || (allPlayersFound && setting.AllPlayersNearRequired)) && setting.IsEnabled)
                     {
                         highestPrioritySetting = setting; break;
                     }
