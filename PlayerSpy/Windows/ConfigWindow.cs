@@ -23,8 +23,8 @@ public class ConfigWindow : Window, IDisposable
          ImGuiWindowFlags.NoCollapse | ImGuiWindowFlags.NoScrollbar |
         ImGuiWindowFlags.NoScrollWithMouse)
     {
-        Size = new Vector2(1200, 600);
-        SizeCondition = ImGuiCond.Always;
+        Size = new Vector2(1300, 600);
+        SizeCondition = ImGuiCond.FirstUseEver;
 
         Configuration = plugin.Configuration;
         _plugin = plugin;
@@ -47,7 +47,7 @@ public class ConfigWindow : Window, IDisposable
 
         var settings = new List<RenderedSetting>(Configuration.RenderedSettings);
 
-        if (ImGui.BeginTable("#modsettings", 11, ImGuiTableFlags.Resizable | ImGuiTableFlags.Reorderable))
+        if (ImGui.BeginTable("#modsettings", 12, ImGuiTableFlags.Resizable | ImGuiTableFlags.Reorderable))
         {
             ImGui.TableSetupColumn("#");
             ImGui.TableSetupColumn("Mod Name");
@@ -57,6 +57,7 @@ public class ConfigWindow : Window, IDisposable
             ImGui.TableSetupColumn("Unrendered Option");
             ImGui.TableSetupColumn("Players");
             ImGui.TableSetupColumn("Simply Disable Mode");
+            ImGui.TableSetupColumn("All Players Required");
             ImGui.TableSetupColumn("Priority");
             ImGui.TableSetupColumn("Enabled");
             ImGui.TableSetupColumn("Delete");
@@ -137,17 +138,23 @@ public class ConfigWindow : Window, IDisposable
                     setting.IsNotRenderedModDisabled = isnotrenderedmoddisable;
                 }
 
-
-
                 ImGui.TableSetColumnIndex(8);
+                var reqireAllPlayers = setting.AllPlayersNearRequired;
+                if (ImGui.Checkbox("##allplayers" + row, ref reqireAllPlayers))
+                {
+                    setting.AllPlayersNearRequired = reqireAllPlayers;
+                }
+
+                ImGui.TableSetColumnIndex(9);
                 var priority = setting.Priority;
                 if (ImGui.InputInt("##priority" + row, ref priority))
                 {
                     setting.Priority = priority;
                 }
 
+             
                 // Enabled
-                ImGui.TableSetColumnIndex(9);
+                ImGui.TableSetColumnIndex(10);
 
                 var enabled = setting.IsEnabled;
                 if (ImGui.Checkbox("##enabled" + row, ref enabled))
@@ -155,7 +162,7 @@ public class ConfigWindow : Window, IDisposable
                     setting.IsEnabled = enabled;
                 }
 
-                ImGui.TableSetColumnIndex(10);
+                ImGui.TableSetColumnIndex(11);
                 if (ImGuiComponents.IconButton("##trashCan" + row, FontAwesomeIcon.Trash))
                 {
                     // Temp list to remove entries

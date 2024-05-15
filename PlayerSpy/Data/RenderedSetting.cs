@@ -26,6 +26,7 @@ namespace PlayerSpy.Data
 
         public bool IsNotRenderedModDisabled { get; set; } = false;
         
+        public bool AllPlayersNearRequired { get; set; } = false;
         
         public bool IsEnabled { get; set; } = true;
 

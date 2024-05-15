@@ -114,10 +114,9 @@ namespace PlayerSpy
                 var state = renderStates[mod.Name];
                 var settingsPlayers = setting.Players.Split(';');
                 bool anyPlayerMatches = players.Any(player => settingsPlayers.Any(settingsPlayer => settingsPlayer.Trim() == player.Name.TextValue));
-                if (anyPlayerMatches && state != (setting.IsNotRenderedModDisabled ? "true" :setting.RenderedOption))
+                bool allPlayersFound = settingsPlayers.All(settingsPlayer => players.Any(player => player.Name.TextValue.Trim() == settingsPlayer.Trim()));
+                if (((anyPlayerMatches && !setting.AllPlayersNearRequired) || (allPlayersFound && setting.AllPlayersNearRequired)) && state != (setting.IsNotRenderedModDisabled ? "true" :setting.RenderedOption))
                 {
-
-
                     if (!setting.IsNotRenderedModDisabled)
                     {
 
@@ -129,7 +128,7 @@ namespace PlayerSpy
                     }
                     penumbraService.Redraw();
                     renderStates[mod.Name] = setting.IsNotRenderedModDisabled ? "true" : setting.RenderedOption;
-                } else if (!anyPlayerMatches && state != (setting.IsNotRenderedModDisabled? "false" :setting.NotRenderedOption))
+                } else if (((!anyPlayerMatches && !setting.AllPlayersNearRequired) || (!allPlayersFound && setting.AllPlayersNearRequired)) && state != (setting.IsNotRenderedModDisabled? "false" :setting.NotRenderedOption))
                 {
                     if (!setting.IsNotRenderedModDisabled)
                     {
@@ -145,7 +144,7 @@ namespace PlayerSpy
                 }
 
             }
-                _lastCheckTime = now.AddMilliseconds(200);
+            _lastCheckTime = now.AddMilliseconds(200);
 
         }
 
