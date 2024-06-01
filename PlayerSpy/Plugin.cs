@@ -36,6 +36,9 @@ namespace PlayerSpy
 
         [PluginService] public static IClientState ClientState { get; private set; } = null;
 
+        [PluginService]
+        public static IPluginLog Log { get; private set; } = null;
+
         private ConfigWindow ConfigWindow { get; init; }
 
         private Dictionary<string, string> renderStates = new Dictionary<string, string>();
@@ -50,10 +53,12 @@ namespace PlayerSpy
 
         public Plugin(
             [RequiredVersion("1.0")] DalamudPluginInterface pluginInterface,
-            [RequiredVersion("1.0")] ICommandManager commandManager)
+            [RequiredVersion("1.0")] ICommandManager commandManager,
+            [RequiredVersion("1.0")] IPluginLog log)
         {
             this.PluginInterface = pluginInterface;
             this.CommandManager = commandManager;
+            Log = log;
 
             this.Configuration = this.PluginInterface.GetPluginConfig() as Configuration ?? new Configuration();
             this.Configuration.Initialize(this.PluginInterface);
@@ -77,6 +82,7 @@ namespace PlayerSpy
         {
             this.WindowSystem.Draw();
         }
+
 
         /// <summary>
         /// TODO: We're already checking if a player is found when pulling the highest priority list, perhaps it is best to send this function

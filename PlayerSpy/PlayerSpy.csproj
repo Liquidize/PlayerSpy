@@ -3,7 +3,7 @@
   <PropertyGroup>
     <Authors></Authors>
     <Company></Company>
-    <Version>1.0.1</Version>
+    <Version>1.1.0</Version>
     <Description>A plugin for dynamically modifying a penumbra mod based on if someone is near.</Description>
     <Copyright></Copyright>
     <PackageProjectUrl>https://github.com/goatcorp/SamplePlugin</PackageProjectUrl>
@@ -32,7 +32,8 @@
 
   <ItemGroup>
     <PackageReference Include="DalamudPackager" Version="2.1.12" />
-      <PackageReference Include="Penumbra.Api" Version="1.0.11" />
+    <ProjectReference Include="..\..\..\..\XIV\Penumbra.Api\Penumbra.Api.csproj" />
+      <ProjectReference Include="..\..\..\..\XIV\Penumbra.GameData\Penumbra.GameData.csproj" />
       <Reference Include="Dalamud">
           <HintPath>$(DalamudLibPath)Dalamud.dll</HintPath>
           <Private>False</Private>
